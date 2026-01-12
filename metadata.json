@@ -1,0 +1,5 @@
+{
+  "name": "BladeViewer - Instant Blade Reader",
+  "description": "Upload Laravel Blade files to instantly preview them in a GUI. Parses logic locally without AI. Fast, secure, and offline-ready.",
+  "requestFramePermissions": []
+}
