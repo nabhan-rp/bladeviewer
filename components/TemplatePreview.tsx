@@ -83,8 +83,9 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
                 }
                 /* Enforce exact dimensions in print, overriding any flex/scale */
                 .print-page {
+                    box-sizing: border-box !important;
                     width: ${settings.pageWidth}${settings.unit} !important;
-                    height: ${settings.pageHeight}${settings.unit} !important; 
+                    min-height: ${settings.pageHeight}${settings.unit} !important; 
                     
                     /* Explicitly enforce margins via padding in print mode */
                     padding-top: ${settings.marginTop}${settings.unit} !important;
@@ -93,8 +94,16 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
                     padding-left: ${settings.marginLeft}${settings.unit} !important;
 
                     page-break-after: always !important;
-                    overflow: visible !important; /* Allow text to flow if it slightly exceeds */
+                    overflow: visible !important; 
+                    display: block !important;
                 }
+
+                /* Ensure subsequent pages (like attachments) start on a new page cleanly with proper margins */
+                .print-page + .print-page {
+                    page-break-before: always !important;
+                    margin-top: 0 !important;
+                }
+
                 .print-page:last-child {
                     page-break-after: auto !important;
                 }
@@ -104,7 +113,6 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
 
     {/* Page 1: Letter */}
     <div 
-      /* Added print:overflow-visible to prevent cutting off text at bottom */
       className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden print:overflow-visible"
       style={{
         transform: `scale(${scale})`, // Inline style for Screen
