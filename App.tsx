@@ -95,7 +95,7 @@ const App: React.FC = () => {
   };
 
   const handleDownloadPreview = () => {
-      // 1. Determine Smart Filename
+      // 1. Determine Smart Filename for PDF
       let fileName = "Dokumen";
 
       // Check if user has filled in specific key variables
@@ -119,7 +119,7 @@ const App: React.FC = () => {
       // 3. Print
       window.print();
 
-      // 4. Revert title after a small delay (to ensure browser picked up the change)
+      // 4. Revert title after a small delay
       setTimeout(() => {
           document.title = originalTitle;
       }, 1000);

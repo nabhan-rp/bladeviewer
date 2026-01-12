@@ -31,63 +31,95 @@
         background: #cbd5e1;
       }
 
-      /* PRINT SPECIFIC STYLES */
+      /* =========================================
+         ULTIMATE PRINT RESET v2
+         ========================================= */
       @media print {
-        /* 
-           NOTE: @page margins are handled dynamically in TemplatePreview.tsx 
-           to match the user's settings exactly.
-        */
+        /* 0. GLOBAL PAGE RESET - CRITICAL FOR MARGINS */
+        @page {
+            margin: 0 !important;
+            size: auto; 
+        }
 
-        /* Hide everything by default */
+        /* 1. Reset Global Layout Constraints */
+        html, body {
+          width: 100%;
+          height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: visible !important; 
+          background-color: white !important;
+        }
+
+        /* 2. Hide EVERYTHING in the DOM by default */
         body * {
           visibility: hidden;
         }
-        
-        /* Reset background and layout constraints */
-        body, html, #root {
-          background-color: white !important;
-          width: 100%;
-          height: 100%;
-          margin: 0;
-          padding: 0;
-          overflow: visible !important; /* Allow content to flow naturally */
-        }
 
-        /* Hide UI components specifically */
-        .no-print, button, input, select, .editor-panel, nav, header {
+        /* 3. Hide UI Specifics */
+        #root > div {
+            background: white !important;
+            height: auto !important;
+            overflow: visible !important;
+            display: block !important;
+            position: static !important; /* Ensure root doesn't trap position */
+        }
+        
+        .no-print, nav, header, aside, .editor-panel, button {
           display: none !important;
         }
 
-        /* Target the specifically marked print pages */
+        /* 4. Target the Page Container - RESET SCROLL POSITION */
+        .preview-container {
+            visibility: visible !important;
+            position: absolute !important; /* Use absolute to snap to document top */
+            top: 0 !important;
+            left: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            overflow: visible !important;
+            width: 100% !important;
+            height: auto !important;
+            display: block !important;
+            z-index: 9999; /* Ensure it's on top */
+        }
+
+        /* 5. The Actual Content Pages */
         .print-page, .print-page * {
           visibility: visible !important;
         }
 
         .print-page {
           position: relative !important;
-          left: 0;
-          top: 0;
-          margin: 0 !important;
-          /* Padding is handled by inline styles in React component based on settings */
+          left: 0 !important;
+          top: 0 !important;
+          margin: 0 !important; 
+          padding: 0 !important; /* Internal padding is handled by the div style */
+          
           box-shadow: none !important;
           border: none !important;
+          background: white !important;
+          
+          /* CRITICAL: Reset Transform & Scaling */
           transform: none !important; 
+          width: 100% !important; 
+          
+          /* CRITICAL: Allow Overflow so bottom text isn't cut off */
+          overflow: visible !important;
+          height: auto !important; /* Allow height to expand if needed */
+          
           page-break-after: always;
-          /* IMPORTANT: Avoid overflow hidden in print to prevent cutting off text at the very bottom edge */
-          overflow: visible !important; 
-        }
-        
-        /* Remove page break indicators used in UI */
-        .page-break-indicator {
-            display: none !important;
+          break-after: page;
+          
+          color: black !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
-        /* Reset padding of the container holding the preview */
-        .preview-container {
-            padding: 0 !important;
-            margin: 0 !important;
-            background: white !important;
-            display: block !important;
+        /* Remove Page Break Indicators */
+        .page-break-indicator {
+            display: none !important;
         }
       }
     </style>

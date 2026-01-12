@@ -29,8 +29,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
 
   const pageStyle = {
       width: `${settings.pageWidth}${settings.unit}`,
-      // Use height instead of minHeight for print accuracy to prevent overflowing to a blank 2nd page
-      height: `${settings.pageHeight}${settings.unit}`, 
+      minHeight: `${settings.pageHeight}${settings.unit}`, // Use minHeight for screen to look like paper
       paddingTop: `${settings.marginTop}${settings.unit}`,
       paddingRight: `${settings.marginRight}${settings.unit}`,
       paddingBottom: `${settings.marginBottom}${settings.unit}`,
@@ -69,7 +68,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
   );
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 print:block print:gap-0">
     {/* 
         Dynamic Style Injection 
         This is critical. It forces the browser's printer driver to use the EXACT paper size 
@@ -80,11 +79,17 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
             @media print {
                 @page {
                     size: ${pageSizeCss}; 
-                    margin: 0mm !important; /* We handle margins via padding on the div */
+                    margin: 0mm !important; 
                 }
+                /* Enforce exact dimensions in print, overriding any flex/scale */
                 .print-page {
                     width: ${settings.pageWidth}${settings.unit} !important;
-                    height: ${settings.pageHeight}${settings.unit} !important;
+                    height: ${settings.pageHeight}${settings.unit} !important; 
+                    page-break-after: always !important;
+                    overflow: visible !important; /* Allow text to flow if it slightly exceeds */
+                }
+                .print-page:last-child {
+                    page-break-after: auto !important;
                 }
             }
         `}
@@ -92,9 +97,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
 
     {/* Page 1: Letter */}
     <div 
-      className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden"
+      /* Added print:overflow-visible to prevent cutting off text at bottom */
+      className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden print:overflow-visible"
       style={{
-        transform: `scale(${scale})`,
+        transform: `scale(${scale})`, // Inline style for Screen
         ...pageStyle,
         fontFamily: settings.globalFontFamily,
         fontSize: `${settings.fontSize}pt`,
@@ -156,9 +162,9 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
     {/* Page 2: Attachments */}
     {settings.hasAttachment && (
         <div 
-            className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden"
+            className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden print:overflow-visible"
             style={{
-                transform: `scale(${scale})`,
+                transform: `scale(${scale})`, // Inline style for Screen
                 ...pageStyle,
                 fontFamily: settings.globalFontFamily,
                 fontSize: `${settings.fontSize}pt`,
