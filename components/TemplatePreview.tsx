@@ -85,6 +85,13 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
                 .print-page {
                     width: ${settings.pageWidth}${settings.unit} !important;
                     height: ${settings.pageHeight}${settings.unit} !important; 
+                    
+                    /* Explicitly enforce margins via padding in print mode */
+                    padding-top: ${settings.marginTop}${settings.unit} !important;
+                    padding-right: ${settings.marginRight}${settings.unit} !important;
+                    padding-bottom: ${settings.marginBottom}${settings.unit} !important;
+                    padding-left: ${settings.marginLeft}${settings.unit} !important;
+
                     page-break-after: always !important;
                     overflow: visible !important; /* Allow text to flow if it slightly exceeds */
                 }
