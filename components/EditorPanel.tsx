@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LetterSettings, Variable, TabView } from '../types';
+import { LetterSettings, Variable, TabView, PageSizePreset } from '../types';
 import RichTextEditor from './RichTextEditor';
 
 interface EditorPanelProps {
@@ -94,6 +94,89 @@ const EditorPanel: React.FC<EditorPanelProps> = ({ settings, setSettings, onDown
 
         {activeSection === 'layout' && (
           <div className="space-y-6">
+              
+              {/* Page Settings Section */}
+              <div>
+                <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4">Page Settings</label>
+                
+                <div className="mb-4">
+                    <label className="text-[10px] text-gray-400 block mb-1 font-bold">Paper Preset</label>
+                    <select 
+                        value={settings.pageSize}
+                        onChange={(e) => {
+                            const newSize = e.target.value as PageSizePreset;
+                            updateSetting('pageSize', newSize);
+                            
+                            // Update dimensions based on preset
+                            if (newSize === 'A4') { 
+                                updateSetting('pageWidth', 21); 
+                                updateSetting('pageHeight', 29.7); 
+                                updateSetting('unit', 'cm'); 
+                            }
+                            if (newSize === 'Letter') { 
+                                updateSetting('pageWidth', 21.59); 
+                                updateSetting('pageHeight', 27.94); 
+                                updateSetting('unit', 'cm'); 
+                            }
+                            if (newSize === 'Legal') { 
+                                updateSetting('pageWidth', 21.59); 
+                                updateSetting('pageHeight', 35.56); 
+                                updateSetting('unit', 'cm'); 
+                            }
+                            if (newSize === 'F4') { 
+                                updateSetting('pageWidth', 21.5); 
+                                updateSetting('pageHeight', 33); 
+                                updateSetting('unit', 'cm'); 
+                            }
+                        }}
+                        className="w-full bg-gray-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl px-3 py-2 text-sm text-gray-800 transition-all outline-none"
+                    >
+                        <option value="A4">A4 (21 x 29.7 cm)</option>
+                        <option value="Letter">Letter (21.6 x 27.9 cm)</option>
+                        <option value="Legal">Legal (21.6 x 35.6 cm)</option>
+                        <option value="F4">F4 / Folio (21.5 x 33 cm)</option>
+                        <option value="Custom">Custom Size</option>
+                    </select>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="text-[10px] text-gray-400 block mb-1 font-bold">Width</label>
+                      <input 
+                        type="number" step="0.1" value={settings.pageWidth}
+                        onChange={(e) => {
+                            updateSetting('pageWidth', parseFloat(e.target.value));
+                            updateSetting('pageSize', 'Custom');
+                        }}
+                        className="w-full bg-gray-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl px-3 py-2 text-sm text-gray-800 transition-all outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-gray-400 block mb-1 font-bold">Height</label>
+                      <input 
+                        type="number" step="0.1" value={settings.pageHeight}
+                        onChange={(e) => {
+                            updateSetting('pageHeight', parseFloat(e.target.value));
+                            updateSetting('pageSize', 'Custom');
+                        }}
+                        className="w-full bg-gray-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl px-3 py-2 text-sm text-gray-800 transition-all outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-gray-400 block mb-1 font-bold">Unit</label>
+                      <select 
+                        value={settings.unit}
+                        onChange={(e) => updateSetting('unit', e.target.value as any)}
+                        className="w-full bg-gray-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl px-3 py-2 text-sm text-gray-800 transition-all outline-none"
+                      >
+                        <option value="cm">cm</option>
+                        <option value="mm">mm</option>
+                        <option value="in">in</option>
+                      </select>
+                    </div>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4">Page Margins ({settings.unit})</label>
                 <div className="grid grid-cols-2 gap-4">

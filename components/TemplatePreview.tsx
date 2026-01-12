@@ -22,8 +22,9 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
   const processedAttachment = useMemo(() => replaceVariables(settings.attachmentContent), [settings.attachmentContent, settings.variables]);
   const processedFooter = useMemo(() => replaceVariables(settings.footerContent), [settings.footerContent, settings.variables]);
 
-  // Construct the CSS size string (e.g., "21cm 29.7cm" or "A4 portrait")
-  const pageSizeCss = settings.pageSize === 'Custom' 
+  // Construct the CSS size string.
+  // Use explicit dimensions for F4 and Custom to prevent browser fallback issues.
+  const pageSizeCss = (settings.pageSize === 'Custom' || settings.pageSize === 'F4')
     ? `${settings.pageWidth}${settings.unit} ${settings.pageHeight}${settings.unit}`
     : `${settings.pageSize} portrait`;
 
