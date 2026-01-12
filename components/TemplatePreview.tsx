@@ -27,9 +27,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
     ? `${settings.pageWidth}${settings.unit} ${settings.pageHeight}${settings.unit}`
     : `${settings.pageSize} portrait`;
 
-  const pageStyle = {
+  // Inline styles for SCREEN view (simulates paper with padding)
+  const screenPageStyle = {
       width: `${settings.pageWidth}${settings.unit}`,
-      minHeight: `${settings.pageHeight}${settings.unit}`, // Use minHeight for screen to look like paper
+      minHeight: `${settings.pageHeight}${settings.unit}`,
       paddingTop: `${settings.marginTop}${settings.unit}`,
       paddingRight: `${settings.marginRight}${settings.unit}`,
       paddingBottom: `${settings.marginBottom}${settings.unit}`,
@@ -70,38 +71,39 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
   return (
     <div className="flex flex-col gap-8 print:block print:gap-0">
     {/* 
-        Dynamic Style Injection 
-        This is critical. It forces the browser's printer driver to use the EXACT paper size 
-        defined in the settings, removing the need for manual adjustment in the print dialog.
+        DYNAMIC PRINT STYLES
+        We move margins from 'padding' to '@page margin'.
+        This allows the browser to apply margins to EVERY page generated, 
+        fixing the issue where page 2 text starts at the very top edge.
     */}
     <style>
         {`
             @media print {
                 @page {
                     size: ${pageSizeCss}; 
-                    margin: 0mm !important; 
+                    /* Apply User Margins directly to the Paper */
+                    margin-top: ${settings.marginTop}${settings.unit} !important;
+                    margin-right: ${settings.marginRight}${settings.unit} !important;
+                    margin-bottom: ${settings.marginBottom}${settings.unit} !important;
+                    margin-left: ${settings.marginLeft}${settings.unit} !important;
                 }
-                /* Enforce exact dimensions in print, overriding any flex/scale */
+
                 .print-page {
                     box-sizing: border-box !important;
-                    width: ${settings.pageWidth}${settings.unit} !important;
-                    min-height: ${settings.pageHeight}${settings.unit} !important; 
-                    
-                    /* Explicitly enforce margins via padding in print mode */
-                    padding-top: ${settings.marginTop}${settings.unit} !important;
-                    padding-right: ${settings.marginRight}${settings.unit} !important;
-                    padding-bottom: ${settings.marginBottom}${settings.unit} !important;
-                    padding-left: ${settings.marginLeft}${settings.unit} !important;
-
-                    page-break-after: always !important;
+                    width: 100% !important;
+                    /* Remove padding in print mode because @page handles the margins now */
+                    padding: 0 !important; 
+                    margin: 0 !important;
+                    min-height: 0 !important; /* Let content dictate height */
+                    height: auto !important;
                     overflow: visible !important; 
                     display: block !important;
+                    page-break-after: always !important;
                 }
 
-                /* Ensure subsequent pages (like attachments) start on a new page cleanly with proper margins */
+                /* Ensure attachments start on a new page */
                 .print-page + .print-page {
                     page-break-before: always !important;
-                    margin-top: 0 !important;
                 }
 
                 .print-page:last-child {
@@ -113,10 +115,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
 
     {/* Page 1: Letter */}
     <div 
-      className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden print:overflow-visible"
+      className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden"
       style={{
-        transform: `scale(${scale})`, // Inline style for Screen
-        ...pageStyle,
+        transform: `scale(${scale})`, // Screen scale
+        ...screenPageStyle, // Screen padding & size
         fontFamily: settings.globalFontFamily,
         fontSize: `${settings.fontSize}pt`,
         color: '#000000',
@@ -177,10 +179,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
     {/* Page 2: Attachments */}
     {settings.hasAttachment && (
         <div 
-            className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden print:overflow-visible"
+            className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden"
             style={{
-                transform: `scale(${scale})`, // Inline style for Screen
-                ...pageStyle,
+                transform: `scale(${scale})`, 
+                ...screenPageStyle,
                 fontFamily: settings.globalFontFamily,
                 fontSize: `${settings.fontSize}pt`,
                 color: '#000000',

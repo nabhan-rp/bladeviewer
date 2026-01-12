@@ -32,16 +32,14 @@
       }
 
       /* =========================================
-         ULTIMATE PRINT RESET v4
+         ULTIMATE PRINT RESET v5
          ========================================= */
       @media print {
-        /* 0. GLOBAL PAGE RESET */
-        @page {
-            margin: 0 !important;
-            size: auto; 
-        }
-
-        /* 1. Reset Global Layout Constraints */
+        /* 
+           Global Reset. 
+           We let TemplatePreview.tsx inject the specific @page size and margins 
+           based on user settings. We just reset the basics here.
+        */
         html, body {
           width: 100%;
           height: auto !important;
@@ -51,22 +49,19 @@
           background-color: white !important;
         }
 
-        /* 2. Hide EVERYTHING in the DOM by default */
-        body * {
-          visibility: hidden;
+        /* Hide UI elements */
+        .no-print, nav, header, aside, .editor-panel, button, #root > div > div:first-child {
+          display: none !important;
         }
 
-        /* 3. Hide UI Specifics */
-        #root > div {
+        /* Ensure root allows flow */
+        #root, #root > div {
             background: white !important;
             height: auto !important;
+            width: 100% !important;
             overflow: visible !important;
             display: block !important;
             position: static !important; 
-        }
-        
-        .no-print, nav, header, aside, .editor-panel, button {
-          display: none !important;
         }
 
         /* 4. Target the Page Container */
@@ -91,23 +86,19 @@
         }
 
         .print-page {
+          /* Reset container styles for print flow */
           position: relative !important;
-          /* Removed 'top: 0' and 'left: 0' to prevent sticking to previous page context */
           margin: 0 !important; 
-          
-          box-shadow: none !important;
           border: none !important;
           background: white !important;
+          box-shadow: none !important;
           
-          /* CRITICAL: Reset Transform & Scaling */
-          transform: none !important; 
-          width: 100% !important; 
-          
-          /* Allow Overflow so bottom text isn't cut off */
-          overflow: visible !important;
+          /* Let content flow naturally across pages */
+          width: 100% !important;
           height: auto !important; 
+          overflow: visible !important;
           
-          /* Ensure text is black */
+          /* Colors */
           color: black !important;
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
