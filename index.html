@@ -33,6 +33,11 @@
 
       /* PRINT SPECIFIC STYLES */
       @media print {
+        /* 
+           NOTE: @page margins are handled dynamically in TemplatePreview.tsx 
+           to match the user's settings exactly.
+        */
+
         /* Hide everything by default */
         body * {
           visibility: hidden;
@@ -45,7 +50,7 @@
           height: 100%;
           margin: 0;
           padding: 0;
-          overflow: visible !important;
+          overflow: visible !important; /* Allow content to flow naturally */
         }
 
         /* Hide UI components specifically */
@@ -59,19 +64,17 @@
         }
 
         .print-page {
-          position: absolute;
+          position: relative !important;
           left: 0;
           top: 0;
-          width: 100% !important;
           margin: 0 !important;
-          padding: 0 !important;
+          /* Padding is handled by inline styles in React component based on settings */
           box-shadow: none !important;
           border: none !important;
-          /* Remove the scaling transform used for screen preview */
           transform: none !important; 
-          /* Ensure subsequent pages flow correctly */
-          position: relative !important; 
           page-break-after: always;
+          /* IMPORTANT: Avoid overflow hidden in print to prevent cutting off text at the very bottom edge */
+          overflow: visible !important; 
         }
         
         /* Remove page break indicators used in UI */

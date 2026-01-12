@@ -95,7 +95,34 @@ const App: React.FC = () => {
   };
 
   const handleDownloadPreview = () => {
+      // 1. Determine Smart Filename
+      let fileName = "Dokumen";
+
+      // Check if user has filled in specific key variables
+      const meaningfulVars = ['nomor_surat', 'no_surat', 'title', 'judul', 'perihal', 'nama_dokumen'];
+      const foundVar = settings.variables.find(v => 
+        meaningfulVars.includes(v.key.toLowerCase()) && v.defaultValue.trim() !== ''
+      );
+
+      if (foundVar) {
+          // Clean filename string
+          fileName = foundVar.defaultValue.replace(/[^a-zA-Z0-9-_ ]/g, "").trim();
+      } else if (docState.originalFileName) {
+          // Fallback to uploaded filename without extension
+          fileName = docState.originalFileName.replace(/\.(blade\.php|php|txt|html)$/i, '');
+      }
+
+      // 2. Temporarily change document title (this is what browsers use for the Save as PDF filename)
+      const originalTitle = document.title;
+      document.title = fileName;
+
+      // 3. Print
       window.print();
+
+      // 4. Revert title after a small delay (to ensure browser picked up the change)
+      setTimeout(() => {
+          document.title = originalTitle;
+      }, 1000);
   };
 
   return (
