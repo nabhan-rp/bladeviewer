@@ -38,6 +38,31 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
       paddingLeft: `${settings.marginLeft}${settings.unit}`,
   };
 
+  // Helper to determine if borders should be hidden for a specific page number
+  const shouldHideBorders = (pageNumber: number): boolean => {
+      if (!settings.hideTableBorders) return false;
+      const pagesStr = settings.hideTableBordersPages ? settings.hideTableBordersPages.trim() : "";
+      
+      // If empty or "all", hide everywhere
+      if (pagesStr === "" || pagesStr.toLowerCase() === 'all') return true;
+
+      const parts = pagesStr.split(',').map(p => p.trim());
+      for (const part of parts) {
+          if (part.includes('-')) {
+              const [start, end] = part.split('-').map(Number);
+              if (!isNaN(start) && !isNaN(end) && pageNumber >= start && pageNumber <= end) {
+                  return true;
+              }
+          } else {
+              const p = Number(part);
+              if (!isNaN(p) && p === pageNumber) {
+                  return true;
+              }
+          }
+      }
+      return false;
+  };
+
   const HeaderLines = () => (
     <div className="w-full clear-both">
         {settings.headerLines.map((line) => (
@@ -112,18 +137,18 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
                 }
             }
 
-            /* Optional: Hide table borders if requested */
-            ${settings.hideTableBorders ? `
-                .content-body table, .content-body th, .content-body td {
-                    border: none !important;
-                }
-            ` : ''}
+            /* HIDE TABLE BORDERS CLASS */
+            .hide-table-borders .content-body table, 
+            .hide-table-borders .content-body th, 
+            .hide-table-borders .content-body td {
+                border: none !important;
+            }
         `}
     </style>
 
     {/* Page 1: Letter */}
     <div 
-      className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden"
+      className={`print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden ${shouldHideBorders(1) ? 'hide-table-borders' : ''}`}
       style={{
         transform: `scale(${scale})`, // Screen scale
         ...screenPageStyle, // Screen padding & size
@@ -187,7 +212,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
     {/* Page 2: Attachments */}
     {settings.hasAttachment && (
         <div 
-            className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden"
+            className={`print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col overflow-hidden ${shouldHideBorders(2) ? 'hide-table-borders' : ''}`}
             style={{
                 transform: `scale(${scale})`, 
                 ...screenPageStyle,

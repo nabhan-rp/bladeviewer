@@ -25,6 +25,7 @@ const DEFAULT_SETTINGS: LetterSettings = {
   logoAspectRatio: "1:1",
   rawHtmlContent: "<div class='text-center p-10 text-gray-400'>Upload a Blade File to see preview</div>",
   hideTableBorders: false,
+  hideTableBordersPages: "",
   hasAttachment: false,
   attachmentShowKop: false,
   attachmentContent: "",

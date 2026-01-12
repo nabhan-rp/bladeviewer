@@ -46,6 +46,7 @@ export interface LetterSettings {
   logoAspectRatio: string;
   rawHtmlContent: string;
   hideTableBorders: boolean;
+  hideTableBordersPages: string;
   showFooter: boolean;
   footerContent: string;
   hasAttachment: boolean;
