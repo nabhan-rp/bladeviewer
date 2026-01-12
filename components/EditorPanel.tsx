@@ -193,30 +193,17 @@ const EditorPanel: React.FC<EditorPanelProps> = ({ settings, setSettings, onDown
                 </div>
               </div>
               
-              <div className="pt-4 border-t border-gray-100 space-y-4">
-                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Typography & Styling</label>
+              <div className="pt-4 border-t border-gray-100">
+                 <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Typography</label>
                  <select 
                     value={settings.globalFontFamily}
                     onChange={(e) => updateSetting('globalFontFamily', e.target.value)}
-                    className="w-full bg-gray-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl px-3 py-2 text-sm text-gray-800 transition-all outline-none mb-3"
+                    className="w-full bg-gray-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-xl px-3 py-2 text-sm text-gray-800 transition-all outline-none"
                  >
                     <option value='"Times New Roman", serif'>Times New Roman</option>
                     <option value='"Arial", sans-serif'>Arial</option>
                     <option value='"Helvetica", sans-serif'>Helvetica</option>
                  </select>
-
-                 <div className="flex items-center gap-2">
-                    <input 
-                      type="checkbox" 
-                      id="hideTableBorders"
-                      checked={settings.hideTableBorders}
-                      onChange={(e) => updateSetting('hideTableBorders', e.target.checked)}
-                      className="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-gray-300"
-                    />
-                    <label htmlFor="hideTableBorders" className="text-xs font-medium text-gray-600 cursor-pointer select-none">
-                        Hide All Table Borders (for Layout Tables)
-                    </label>
-                 </div>
               </div>
           </div>
         )}
