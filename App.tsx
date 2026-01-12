@@ -101,7 +101,7 @@ const App: React.FC = () => {
   return (
     <div className="flex h-screen w-screen bg-gray-100 overflow-hidden font-sans">
       {(view === TabView.UPLOAD || view === TabView.EDITOR) && (
-          <div className={`w-full lg:w-[420px] flex-shrink-0 h-full transition-all duration-300 ${view === TabView.UPLOAD ? 'lg:w-full items-center justify-center' : ''}`}>
+          <div className={`w-full lg:w-[420px] flex-shrink-0 h-full transition-all duration-300 no-print ${view === TabView.UPLOAD ? 'lg:w-full items-center justify-center' : ''}`}>
              {view === TabView.UPLOAD ? (
                  <div className="max-w-xl w-full p-10 bg-white rounded-3xl shadow-2xl text-center mx-4 border border-gray-100">
                     <div className="w-20 h-20 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-200">
@@ -147,7 +147,7 @@ const App: React.FC = () => {
       )}
 
       {view !== TabView.UPLOAD && (
-        <div className={`flex-1 bg-gray-200 overflow-auto flex items-start justify-center p-8 lg:p-12 ${view === TabView.EDITOR ? 'hidden lg:flex' : ''}`}>
+        <div className={`flex-1 bg-gray-200 overflow-auto flex items-start justify-center p-8 lg:p-12 preview-container ${view === TabView.EDITOR ? 'hidden lg:flex' : ''}`}>
            <TemplatePreview settings={settings} />
         </div>
       )}

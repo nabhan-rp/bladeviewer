@@ -30,6 +30,63 @@
       .custom-scrollbar::-webkit-scrollbar-thumb:hover {
         background: #cbd5e1;
       }
+
+      /* PRINT SPECIFIC STYLES */
+      @media print {
+        /* Hide everything by default */
+        body * {
+          visibility: hidden;
+        }
+        
+        /* Reset background and layout constraints */
+        body, html, #root {
+          background-color: white !important;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: visible !important;
+        }
+
+        /* Hide UI components specifically */
+        .no-print, button, input, select, .editor-panel, nav, header {
+          display: none !important;
+        }
+
+        /* Target the specifically marked print pages */
+        .print-page, .print-page * {
+          visibility: visible !important;
+        }
+
+        .print-page {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          box-shadow: none !important;
+          border: none !important;
+          /* Remove the scaling transform used for screen preview */
+          transform: none !important; 
+          /* Ensure subsequent pages flow correctly */
+          position: relative !important; 
+          page-break-after: always;
+        }
+        
+        /* Remove page break indicators used in UI */
+        .page-break-indicator {
+            display: none !important;
+        }
+
+        /* Reset padding of the container holding the preview */
+        .preview-container {
+            padding: 0 !important;
+            margin: 0 !important;
+            background: white !important;
+            display: block !important;
+        }
+      }
     </style>
 <script type="importmap">
 {

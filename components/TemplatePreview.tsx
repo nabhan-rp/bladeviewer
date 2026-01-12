@@ -11,8 +11,11 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
   const replaceVariables = (html: string) => {
     let content = html;
     settings.variables.forEach(v => {
+      // In print mode (or when viewed normally), we might want to just show the value.
+      // But keeping the span helps identify what was a variable.
       const regex = new RegExp(`\\{\\{\\s*\\$${v.key}\\s*\\}\\}`, 'g');
-      content = content.replace(regex, `<span class="bg-yellow-100 text-yellow-800 px-1 rounded border border-yellow-300" title="$${v.key}">${v.defaultValue || v.key}</span>`);
+      // Note: We intentionally keep the span structure. The user can just enter the text they want.
+      content = content.replace(regex, `<span>${v.defaultValue || `[${v.key}]`}</span>`);
     });
     return content;
   };
@@ -66,7 +69,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
     <div className="flex flex-col gap-8">
     {/* Page 1: Letter */}
     <div 
-      className="relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col"
+      className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col"
       style={{
         transform: `scale(${scale})`,
         ...pageStyle,
@@ -108,10 +111,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
                     <div key={sig.id} className={wrapperClass}>
                         <p className="mb-1">{sig.label}</p>
                         {isLast && (
-                             <p className="mb-2">{settings.signatureCity}, <span className="bg-yellow-100 px-1">{`{{ $tanggal }}`}</span></p>
+                             <p className="mb-2">{settings.signatureCity}, <span className="bg-yellow-100 px-1 print:bg-transparent">{`{{ $tanggal }}`}</span></p>
                         )}
                         <div className="h-20 flex items-center justify-center my-2">
-                            {sig.type === 'wet' ? <div className="h-full"></div> : <div className="border border-dashed border-gray-400 p-2 text-[10px] bg-gray-50 flex items-center justify-center w-20 h-20">QR Placeholder</div>}
+                            {sig.type === 'wet' ? <div className="h-full"></div> : <div className="border border-dashed border-gray-400 p-2 text-[10px] bg-gray-50 flex items-center justify-center w-20 h-20 print:border-solid print:border-black">QR Code</div>}
                         </div>
                         <p className="font-bold underline mt-2">{sig.name}</p>
                         <p>{sig.title}</p>
@@ -126,13 +129,13 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
           <div className="mt-auto pt-8 border-t border-gray-100 text-xs text-center text-gray-500" dangerouslySetInnerHTML={{ __html: processedFooter }} />
       )}
       
-      <div className="absolute top-4 right-4 bg-gray-200 text-gray-500 text-[10px] px-2 py-1 rounded opacity-50">Page 1</div>
+      <div className="page-break-indicator absolute top-4 right-4 bg-gray-200 text-gray-500 text-[10px] px-2 py-1 rounded opacity-50">Page 1</div>
     </div>
 
     {/* Page 2: Attachments */}
     {settings.hasAttachment && (
         <div 
-            className="relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col"
+            className="print-page relative bg-white text-black box-border shadow-2xl transition-transform origin-top flex flex-col"
             style={{
                 transform: `scale(${scale})`,
                 ...pageStyle,
@@ -141,7 +144,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
                 color: '#000000',
             }}
         >
-            <div className="absolute -top-6 left-0 text-gray-500 text-xs italic font-bold">-- Page Break --</div>
+            <div className="page-break-indicator absolute -top-6 left-0 text-gray-500 text-xs italic font-bold">-- Page Break --</div>
             
             {settings.attachmentShowKop && <HeaderComponent />}
             
@@ -156,7 +159,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
                 <div className="mt-auto pt-8 border-t border-gray-100 text-xs text-center text-gray-500" dangerouslySetInnerHTML={{ __html: processedFooter }} />
             )}
             
-            <div className="absolute top-4 right-4 bg-gray-200 text-gray-500 text-[10px] px-2 py-1 rounded opacity-50">Page 2+</div>
+            <div className="page-break-indicator absolute top-4 right-4 bg-gray-200 text-gray-500 text-[10px] px-2 py-1 rounded opacity-50">Page 2+</div>
         </div>
     )}
     </div>
