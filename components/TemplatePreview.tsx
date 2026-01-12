@@ -111,6 +111,13 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ settings, scale = 1 }
                     page-break-after: auto !important;
                 }
             }
+
+            /* Optional: Hide table borders if requested */
+            ${settings.hideTableBorders ? `
+                .content-body table, .content-body th, .content-body td {
+                    border: none !important;
+                }
+            ` : ''}
         `}
     </style>
 
